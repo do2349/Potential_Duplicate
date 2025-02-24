@@ -287,7 +287,7 @@ def process_dataframe(df):
         return None
 
 def main():
-    st.title("🔄 Recherche de potentiels doublons")
+    st.title("🔄 Recherche des doublons potentiels")
     st.markdown("""
 
     ### Instructions:
