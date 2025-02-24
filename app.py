@@ -269,11 +269,13 @@ def process_dataframe(df):
         df.drop(columns=['Count'], inplace=True)
 
         # Sélection des colonnes spécifiques
-        columns_to_display = ['Référence', 'Doublon', 'Normalized_Ref_Num', 'Has_Non_Numeric_Leading', 
-                             'Normalized_Ref_zeros', 'Has_Leading_Zeros', 'Normalized_Ref_alpha',
-                             'Has_Leading_Alpha', 'Has_Missing_Char', 'Is_Contained', 'Normalized_Ref', 'Doublons Potentiels']
+        columns_to_display = ['Référence', 'Doublon', 'Normalized_Ref', 'Doublons Potentiels']
+
+        # Supposons que votre dataframe s'appelle df
+        filtered_df = df[df['Doublons Potentiels'] > 0]
+
         
-        return df[columns_to_display]
+        return filtered_df[columns_to_display]
     
     except KeyError as e:
         st.error(f"La colonne '{str(e)}' n'a pas été trouvée dans le fichier.")
@@ -285,13 +287,12 @@ def process_dataframe(df):
         return None
 
 def main():
-    st.title("🔄 Outil de traitement des références")
+    st.title("🔄 Recherche de potentiels duplicats")
     st.markdown("""
-    Cet outil permet de normaliser et traiter les références de vos fichiers Excel.
-    
+
     ### Instructions:
     1. Déposez votre fichier Excel (.xlsx)
-    2. Attendez le traitement automatique
+    2. Lancez le traitement automatique
     3. Téléchargez le résultat
     """)
     
@@ -335,22 +336,10 @@ def main():
                         
                         # Statistiques
                         st.subheader("📈 Statistiques du traitement")
-                        col1, col2, col3, col4, col5, col6 = st.columns(6)
+                        col1, col2 = st.columns(2)
                         with col1:
-                            st.metric("Nombre total de références", len(processed_df))
+                            st.metric("Nombre total de références", len(df))
                         with col2:
-                            st.metric("Références avec préfixes alpha", 
-                                    int(processed_df['Has_Non_Numeric_Leading'].sum()))
-                        with col3:
-                            st.metric("Références avec zéros inutiles", 
-                                    int(processed_df['Has_Leading_Zeros'].sum()))
-                        with col4:
-                            st.metric("Références avec caractères manquants", 
-                                    int(processed_df['Has_Missing_Char'].sum()))
-                        with col5:
-                            st.metric("Références contenues dans d'autres", 
-                                    int(processed_df['Is_Contained'].sum()))
-                        with col6:
                             st.metric("Doublons potentiels", 
                                     int(processed_df['Doublons Potentiels'].sum()))
                 
